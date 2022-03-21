@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const {Schema, model} = require("mongoose");
 
-const UserSchema = new mongoose.Schema(
+const UserSchema = new Schema(
   {
     username: {
       type: String,
@@ -40,23 +40,23 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    desc:{
-        type: String,
-        max: 50
+    desc: {
+      type: String,
+      max: 50,
     },
     city: {
-        type: String,
-        max: 50
+      type: String,
+      max: 50,
     },
     age: {
-        type: Number
+      type: Number,
     },
-    relationship:{
-        type: Number,
-        enum: [1,2,3]
-    }
+    relationship: {
+      type: Number,
+      enum: [1, 2, 3],
+    },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("User", UserSchema);
+module.exports = model("User", UserSchema);

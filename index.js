@@ -9,6 +9,7 @@ const morgan = require("morgan");
 // -- РОУТИНГ --
 const userRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
+const postRouter = require("./routes/posts");
 // -- /РОУТИНГ --
 
 dotenv.config();
@@ -31,6 +32,7 @@ app.use(morgan("common"));
 
 app.use('/api/users', userRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/posts', postRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port: ${process.env.PORT}...`);
