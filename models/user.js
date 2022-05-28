@@ -9,6 +9,18 @@ const UserSchema = new Schema(
       max: 20,
       unique: true,
     },
+    name: {
+      type: String,
+      required: true,
+      min: 2,
+      max: 20
+    },
+    surname: {
+      type: String,
+      required: true,
+      min: 2,
+      max: 20
+    },
     email: {
       type: String,
       required: true,
@@ -50,11 +62,53 @@ const UserSchema = new Schema(
     },
     age: {
       type: Number,
+      max: 3
     },
-    relationship: {
-      type: Number,
-      enum: [1, 2, 3],
+    interests: [{
+      type: String,
+      max: 15
+    }],
+    usertype: {
+      type: String,
+      // required: true,
+      enum: ["pupils", "parent", "teacher", "psychologist"]
     },
+    pupils: {
+      school: {
+        type: Schema.Types.ObjectId,
+        ref: "School",
+      },
+      class: {
+        type: Schema.Types.ObjectId,
+        ref: "Class",
+      },
+      parents: [{
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      }]
+    },
+    parent: {
+      school: {
+        type: Schema.Types.ObjectId,
+        ref: "School",
+      },
+      class: {},
+      children: [{
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      }],
+      otherParants: {}
+    },
+    teacher: {
+      school: {
+        type: Schema.Types.ObjectId,
+        ref: "School",
+      },
+
+    },
+    psychologist: {
+      
+    }
   },
   { timestamps: true }
 );

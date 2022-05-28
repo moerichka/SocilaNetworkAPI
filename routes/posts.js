@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const Post = require("../models/Post");
+const Post = require("../models/post");
 const User = require("../models/User");
 
 // -- СОЗДАТЬ ПОСТ --
@@ -70,9 +70,9 @@ router.get("/:id", async (req, res) => {
 });
 
 // -- ПОЛУЧИТЬ ПОСТЫ С ПОДПИСОК --
-router.get("/timeline/all", async (req, res) => {
+router.get("/timeline/:userId", async (req, res) => {
   try {
-    const currentUser = await User.findById(req.body.userId);
+    const currentUser = await User.findById(req.params.userId);
     const userPosts = await Post.find({ userId: currentUser._id });
     const friendPosts = await Promise.all(
       currentUser.followings.map((friendId) => {
@@ -80,6 +80,16 @@ router.get("/timeline/all", async (req, res) => {
       })
     );
     res.status(200).json(userPosts.concat(...friendPosts));
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+// -- ПОЛУЧИТЬ ПОСТЫ ПОЛЬЗОВАТЕЛЯ --
+router.get("/profile/:userId", async (req, res) => {
+  try {
+    const posts = await Post.find({userId: req.params.userId})
+    res.status(200).json(posts)
   } catch (error) {
     res.status(500).json(error);
   }

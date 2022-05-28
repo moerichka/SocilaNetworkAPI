@@ -18,7 +18,7 @@ router.put("/:id", async (req, res) => {
         const user = await User.findByIdAndUpdate(req.params.id, {
           $set: req.body,
         });
-        res.status(200).json("Аккаунт был обнавлен");
+        res.status(200).json("Аккаунт был обновлен");
       } catch (error) {
         return res.status(500).json(error);
       }
@@ -49,15 +49,49 @@ router.delete("/:id", async (req, res) => {
 });
 
 // -- ПОЛУЧИТЬ ПОЛЬЗОВАТЕЛЯ --
-router.get("/:id", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const userId = req.query.userId;
+    const username = req.query.username;
+    const user = userId
+      ? await User.findById(userId)
+      : await User.findOne({ username });
     const { password, updatedAt, ...other } = user._doc;
     res.status(200).json(other);
   } catch (error) {
     res.status(500).json(error);
   }
 });
+
+// -- ПОЛУЧИТЬ ПОЛЬЗОВАТЕЛЕЙ --
+router.get("/getall", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+// -- ПОЛУЧИТЬ ДРУЗЕЙ --
+router.get("/friends/:userId", async (req, res) =>{ 
+  try {
+    const user = await User.findById(req.params.userId)
+    const friends = await Promise.all(
+      user.followings.map(friendId => {
+        return User.findById(friendId)
+      })
+    )
+    let friendList = []
+    friends.map(friend => {
+      const {_id, username, profilePicture} = friend
+      friendList.push({_id, username, profilePicture})
+    })
+    res.status(200).json(friendList)
+  } catch (error) {
+    res.status(500).json(error);
+  }
+})
 
 // -- ПОДПИСАТЬСЯ НА ПОЛЬЗОВАТЕЛЯ --
 router.put("/:id/follow", async (req, res) => {
